@@ -2,8 +2,8 @@ module.exports = {
   outputDir: 'docs',
 
   css: {
-    sourceMap: true
+    sourceMap: true,
   },
 
-  publicPath: ''
-}
+  publicPath: '',
+};
