@@ -7,12 +7,31 @@
   >
     <v-list-item>
        <v-list-item-avatar color="grey">
-        <v-icon dark>{{icon}}</v-icon>
+        <v-icon dark :color="color">{{icon}}</v-icon>
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title class="headline">{{name}}</v-list-item-title>
         <v-list-item-subtitle>Value: ${{value}}</v-list-item-subtitle>
-        Owned: {{count}}
+        <v-list-item-subtitle>Owned: {{count}}</v-list-item-subtitle>
+        <v-row justify="space-between">
+          <v-btn elevation="5" text :disabled="gameTotal.lessThan(cost)"
+            @click.stop="buyGenerator(Math.floor(gameTotal.dividedBy(cost)))">
+            Buy Max ({{Math.floor(gameTotal / cost) | unitsToName}}):
+            ${{Math.floor(gameTotal.dividedBy(cost))}}
+            </v-btn>
+          <v-btn elevation="5" :disabled="gameTotal.lessThan(cost)"
+            text @click.stop="buyGenerator(1)">
+            Buy 1: ${{cost | unitsToName}}</v-btn>
+          <v-btn elevation="5" :disabled="gameTotal.lessThan(cost.times(10))"
+            text @click.stop="buyGenerator(10)">
+            Buy 10: $ {{cost * 10 | unitsToName}}</v-btn>
+          <v-btn elevation="5" :disabled="gameTotal.lessThan(cost.times(100))"
+            text @click.stop="buyGenerator(100)">
+            Buy 100: ${{cost * 100 | unitsToName}}</v-btn>
+          <v-btn elevation="5" :disabled="gameTotal.lessThan(auto)"
+            text @click.stop="$emit('complete', auto.negated())">
+            Buy Auto: ${{auto | unitsToName}}</v-btn>
+        </v-row>
       </v-list-item-content>
     </v-list-item>
     <v-progress-linear
@@ -27,6 +46,7 @@
 </template>
 
 <script>
+import { Decimal } from 'decimal.js';
 
 /**
   What happens with a generator?
@@ -52,6 +72,11 @@ export default {
       default: 'Defalut Name',
       description: 'The the name of the generator.',
     },
+    gameTotal: {
+      type: Decimal,
+      default: new Decimal('0'),
+      description: 'The accumulated total of this board.',
+    },
     color: {
       type: String,
       default: 'cccccc',
@@ -63,28 +88,28 @@ export default {
       description: 'The mdi icon of the generator',
     },
     value: {
-      type: Number,
-      default: 0.00,
-      description: 'The output value of each generator.',
+      type: Decimal,
+      default: new Decimal('0'),
+      description: 'The output value of each generator. Must be a Decimal object, or respond to `add`.',
     },
     cost: {
-      type: Number,
-      default: 5.00,
+      type: Decimal,
+      default: new Decimal('5.00'),
       description: 'The cost of the next generator.',
     },
     auto: {
-      type: Number,
-      default: 50.00,
+      type: Decimal,
+      default: new Decimal('50.00'),
       description: 'The cost of automating the generator.',
     },
     increment: {
-      type: Number,
-      default: 1.00,
+      type: Decimal,
+      default: new Decimal('1.00'),
       description: 'The yield of each generator we own.',
     },
     initialCount: {
-      type: Number,
-      default: 0,
+      type: Decimal,
+      default: new Decimal('0'),
       description: 'How many generators we start with.',
     },
     speed: {
@@ -100,27 +125,33 @@ export default {
   },
   mounted() {
     this.count = this.initialCount;
-    console.log('Mounted', this.count, this.initialCount);
+    // console.log('Mounted', this.count, this.initialCount);
   },
   methods: {
     startGenerator() {
-      console.log('starting...', this.speed, (100 / this.speed) * 1000);
+      // console.log('starting...', this.speed, (100 / this.speed) * 1000);
       if (this.generating) {
         return false;
       }
       this.generating = true;
       this.timer = setInterval(() => {
         this.completion = this.completion + (100 / this.speed);
-        console.log('Complete: ', this.completion);
+        // console.log('Complete: ', this.completion);
         if (this.completion >= 100) {
-          console.log('Generator complete!', this.completion, this.value, this.count, this.value * this.count);
+          // console.log('Generator complete!',
+          // this.completion, this.value, this.count, this.value * this.count);
           clearInterval(this.timer);
           this.generating = false;
           this.completion = 0;
-          this.$emit('complete', this.value * this.count);
+          this.$emit('complete', this.value.times(this.count));
         }
       }, this.updatespeed);
       return true;
+    },
+    buyGenerator(num = 1) {
+      console.log('Buying generator');
+      this.count = this.count.add(num);
+      this.$emit('complete', this.cost.times(num).negated());
     },
   },
 };

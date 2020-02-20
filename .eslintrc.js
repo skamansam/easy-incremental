@@ -21,7 +21,9 @@ module.exports = {
     'vue/no-v-html': 'warning',
     'vue/order-in-components': 'warning',
     'vue/this-in-template': 'error',
-    'vue/array-bracket-spacing': 'error'
+    'vue/array-bracket-spacing': 'error',
+    'vue/max-len': 180,
+    'max-line-length': 180,
   },
 
   parserOptions: {
@@ -36,6 +38,9 @@ module.exports = {
       ],
       env: {
         jest: true,
+      },
+      rules: {
+        'max-len': ["error", { "code": 180 }]
       },
     },
   ],

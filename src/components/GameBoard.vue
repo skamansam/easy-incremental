@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row dense>
-      <h2>${{total}} {{total | unitsToName}}</h2>
+      <h2>${{total | unitsToName}}</h2>
       <v-col cols="12">
         <generator
           v-for="(g, idx) in generators"
@@ -14,6 +14,8 @@
           :increment="g.increment"
           :initialCount="g.initialCount"
           :speed="g.speed"
+          :icon="g.icon"
+          :gameTotal="total"
           @complete="sum"></generator>
       </v-col>
     </v-row>
@@ -21,6 +23,7 @@
 </template>
 
 <script>
+import { Decimal } from 'decimal.js';
 import Generator from './Generator';
 
 export default {
@@ -30,18 +33,17 @@ export default {
   },
   data: () => (
     {
-      total: 0.00,
+      total: new Decimal(0.00),
       generators: [{
-        value: 0.50,
-        cost: 5.00,
-        auto: 50.00,
-        increment: 1.00,
-        initialCount: 1,
+        value: new Decimal(0.50),
+        cost: new Decimal(5.00),
+        auto: new Decimal(50.00),
+        increment: new Decimal(1.00),
+        initialCount: new Decimal(1),
         speed: 5, // number of seconds before this generator finishes
-        name: 'Gen 1',
+        name: 'Generator 0',
         color: '#111',
-        icon: 'mdi-account-circle',
-
+        icon: 'mdi-home',
       }],
     }
   ),
@@ -49,15 +51,20 @@ export default {
     addGenerator(multiplier) {
       const lastGenerator = this.generators[this.generators.length - 1];
       this.generators.push({
-        cost: lastGenerator.cost * multiplier,
-        auto: lastGenerator.auto * multiplier,
-        increment: lastGenerator.increment * multiplier,
-        completionTime: lastGenerator.completionTime * multiplier / 10,
+        value: lastGenerator.value.times(multiplier),
+        cost: lastGenerator.cost.times(multiplier),
+        auto: lastGenerator.auto.times(multiplier),
+        increment: lastGenerator.increment.times(multiplier),
+        initialCount: 1,
+        speed: lastGenerator.speed.times(2), // number of seconds before this generator finishes
+        name: `Generator ${this.generators.length}`,
+        color: '#111',
+        icon: 'mdi-home',
       });
     },
     sum(value) {
       console.log('SUM', value);
-      this.total = this.total + value;
+      this.total = this.total.add(value);
     },
   },
 };
