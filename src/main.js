@@ -12,6 +12,7 @@ Vue.config.productionTip = false;
 
 Vue.filter('unitsToName', (value) => {
   if (!value) return '';
+  if (value == 0) return 0;
   return `${value} ${humanReadable(value, SHORT_SCALE)}`;
 });
 

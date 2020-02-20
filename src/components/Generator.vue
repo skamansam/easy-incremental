@@ -137,11 +137,11 @@ export default {
       this.timer = setInterval(() => {
         this.completion = this.completion + (100 / this.speed);
         if (this.completion >= 100) {
-          clearInterval(this.timer);
           this.$nextTick(() => {
             this.generating = false;
             this.completion = 0;
             this.$emit('complete', this.value.times(this.count));
+            clearInterval(this.timer);
           });
         }
       }, this.updatespeed);
