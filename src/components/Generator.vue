@@ -16,7 +16,7 @@
         <v-row justify="space-between">
           <v-btn elevation="5" text :disabled="gameTotal.lessThan(cost)"
             @click.stop="buyGenerator(Math.floor(gameTotal.dividedBy(cost)))">
-            Buy Max ({{Math.floor(gameTotal / cost) | unitsToName}}):
+            Buy Max ({{Math.floor(gameTotal / cost) || 1 | unitsToName}}):
             ${{Math.floor(gameTotal.dividedBy(cost))}}
             </v-btn>
           <v-btn elevation="5" :disabled="gameTotal.lessThan(cost)"
@@ -136,14 +136,14 @@ export default {
       this.generating = true;
       this.timer = setInterval(() => {
         this.completion = this.completion + (100 / this.speed);
-        // console.log('Complete: ', this.completion);
+        console.log(this.completion);
         if (this.completion >= 100) {
-          // console.log('Generator complete!',
-          // this.completion, this.value, this.count, this.value * this.count);
           clearInterval(this.timer);
-          this.generating = false;
-          this.completion = 0;
-          this.$emit('complete', this.value.times(this.count));
+          this.$nextTick(() => {
+            this.generating = false;
+            this.completion = 0;
+            this.$emit('complete', this.value.times(this.count));
+          });
         }
       }, this.updatespeed);
       return true;
@@ -157,6 +157,12 @@ export default {
 };
 </script>
 
-<style lang="sass">
-  //
+<style lang="scss">
+.v-card .v-progress-linear {
+  background: transparent;
+  overflow: hidden;
+  position: relative;
+  transition: 0s map-get($transition, 'ease-in-out');
+  width: 100%;
+}
 </style>

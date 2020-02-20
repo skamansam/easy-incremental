@@ -63,7 +63,6 @@ export default {
       });
     },
     sum(value) {
-      console.log('SUM', value);
       this.total = this.total.add(value);
     },
   },
