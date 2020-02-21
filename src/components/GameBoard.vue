@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row dense>
-      <h2>${{total | unitsToName}}</h2>
+      <h2>${{total | withUnits}}</h2>
       <v-col cols="12">
         <generator
           v-for="(g, idx) in generators"
@@ -10,13 +10,13 @@
           :color="g.color"
           :value="g.value"
           :cost="g.cost"
-          :auto="g.auto"
+          :autoCost="g.autoCost"
           :increment="g.increment"
           :initialCount="g.initialCount"
           :speed="g.speed"
           :icon="g.icon"
           :gameTotal="total"
-          @complete="sum"></generator>
+          @valueChanged="updateTotal"></generator>
       </v-col>
     </v-row>
   </v-container>
@@ -37,7 +37,7 @@ export default {
       generators: [{
         value: new Decimal(0.50),
         cost: new Decimal(5.00),
-        auto: new Decimal(50.00),
+        autoCost: new Decimal(50.00),
         increment: new Decimal(1.00),
         initialCount: new Decimal(1),
         speed: 5, // number of seconds before this generator finishes
@@ -53,7 +53,7 @@ export default {
       this.generators.push({
         value: lastGenerator.value.times(multiplier),
         cost: lastGenerator.cost.times(multiplier),
-        auto: lastGenerator.auto.times(multiplier),
+        autoCost: lastGenerator.auto.times(multiplier),
         increment: lastGenerator.increment.times(multiplier),
         initialCount: 1,
         speed: lastGenerator.speed.times(2), // number of seconds before this generator finishes
@@ -62,8 +62,9 @@ export default {
         icon: 'mdi-home',
       });
     },
-    sum(value) {
+    updateTotal(value) {
       this.total = this.total.add(value);
+      this.$emit('totalUpdated', this.total);
     },
   },
 };

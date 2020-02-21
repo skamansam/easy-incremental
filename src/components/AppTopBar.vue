@@ -13,7 +13,7 @@
         transition="scale-transition"
         width="40"
       />
-      <h2>Easy Incremental</h2>
+      <h2>Easy Incremental: ${{total | withUnits}}</h2>
     </div>
 
     <v-spacer></v-spacer>
@@ -31,6 +31,7 @@
 <script>
 export default {
   name: 'app-top-bar',
+  props: ['total'],
   data: () => (
     {
       showAbout: false,

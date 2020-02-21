@@ -1,9 +1,9 @@
 <template>
   <v-app>
-    <app-top-bar/>
+    <app-top-bar :total="total"/>
     <v-content>
       <v-container fluid>
-        <game-board/>
+        <game-board @totalUpdated="total = $event"/>
       </v-container>
     </v-content>
 
@@ -27,7 +27,7 @@ export default {
   },
 
   data: () => ({
-    //
+    total: 0.00,
   }),
 };
 </script>

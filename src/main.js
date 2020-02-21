@@ -1,6 +1,7 @@
 import Vue from 'vue';
 
 import { humanReadable, SHORT_SCALE } from 'large-number-names';
+import { Decimal } from 'decimal.js';
 
 import App from './App.vue';
 import './registerServiceWorker';
@@ -10,13 +11,10 @@ import vuetify from './plugins/vuetify';
 
 Vue.config.productionTip = false;
 
-Vue.filter('unitsToName', (value) => {
-  if (!value
-      || value === 0
-      || value === '0'
-      || Object.prototype.hasOwnProperty.call('equals', 0)
-  ) return '0';
-  return `${value} ${humanReadable(value, SHORT_SCALE)}`;
+Vue.filter('withUnits', (value) => {
+  const val = new Decimal(value);
+  if (val.toString === '0') return '0';
+  return `${value.toString()} ${humanReadable(value, SHORT_SCALE)}`;
 });
 
 new Vue({
