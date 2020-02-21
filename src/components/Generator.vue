@@ -15,8 +15,8 @@
         <v-list-item-subtitle>Owned: {{count}}</v-list-item-subtitle>
         <v-row justify="space-between">
           <v-btn elevation="5" text :disabled="gameTotal.lessThan(cost)"
-            @click.stop="buyGenerator(Math.floor(gameTotal.dividedBy(cost)))">
-            Buy Max ({{Math.floor(gameTotal / cost) || 1 | unitsToName}}):
+            @click.stop="buyGenerator(gameTotal.dividedBy(cost).floor())">
+            Buy Max ({{gameTotal.dividedBy(cost).floor() || 1 | unitsToName}}):
             ${{Math.floor(gameTotal.dividedBy(cost))}}
             </v-btn>
           <v-btn elevation="5" :disabled="gameTotal.lessThan(cost)"

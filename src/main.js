@@ -11,8 +11,11 @@ import vuetify from './plugins/vuetify';
 Vue.config.productionTip = false;
 
 Vue.filter('unitsToName', (value) => {
-  if (!value) return '';
-  if (value == 0) return 0;
+  if (!value
+      || value === 0
+      || value === '0'
+      || Object.prototype.hasOwnProperty.call('equals', 0)
+  ) return '0';
   return `${value} ${humanReadable(value, SHORT_SCALE)}`;
 });
 

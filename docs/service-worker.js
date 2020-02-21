@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "precache-manifest.1852c4f3701f8f5767d68037fd34131d.js"
+  "precache-manifest.ad8c72a995277224ae07e6c103890d4d.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "easy-incremental"});
